@@ -1,21 +1,21 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+import Alpine from 'alpinejs';
+import { createApp, h } from 'vue';  // Import Vue 3
+import { createInertiaApp } from '@inertiajs/vue3';  // Import createInertiaApp for Vue 3
 
-require('./bootstrap');
 
-import { createApp } from 'vue';
-import ExampleComponent from './components/ExampleComponent.vue';
+// Initialize Alpine.js
+window.Alpine = Alpine;
+Alpine.start();
 
-/**
- * Create a Vue application instance and register components.
- */
-const app = createApp({});
+// Initialize Vue 3 with Inertia using createInertiaApp
+createInertiaApp({
+    resolve: (name) => import(`./Pages/${name}`).then((module) => module.default), // Dynamically resolve components
+    setup({ el, App, props, plugin }) {
+        const app = createApp({ render: () => h(App, props) });
 
-// Register components globally (if needed)
-app.component('example-component', ExampleComponent);
+        // Register Inertia plugin and ZiggyVue with Ziggy data
+        app.use(plugin);
 
-// Mount the Vue application to the DOM
-app.mount('#app');
+        app.mount(el);
+    },
+});
